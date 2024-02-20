@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,6 +25,60 @@ public class LibroServicio {
 
         try {
             return new CustomResponse<>(this.repositorio.findAll(),false,200, "OK");
+        } catch (Exception e) {
+            return new CustomResponse<>(null, true, 500, "Error al obtener los libros");
+        }
+    }
+
+    @Transactional(readOnly=true)
+    public CustomResponse<List<Libro>> getByNombre(String nombre){
+
+        try {
+            return new CustomResponse<>(this.repositorio.getByNombre(nombre),false,200, "OK");
+        } catch (Exception e) {
+            return new CustomResponse<>(null, true, 500, "Error al obtener los libros");
+        }
+    }
+    @Transactional(readOnly=true)
+    public CustomResponse<List<Libro>> getByAutor(String nombre){
+
+        try {
+            return new CustomResponse<>(this.repositorio.getByAutor(nombre),false,200, "OK");
+        } catch (Exception e) {
+            return new CustomResponse<>(null, true, 500, "Error al obtener los libros");
+        }
+    }
+    @Transactional(readOnly=true)
+    public CustomResponse<List<Libro>> getBygenero(String nombre){
+
+        try {
+            return new CustomResponse<>(this.repositorio.getByGenero(nombre),false,200, "OK");
+        } catch (Exception e) {
+            return new CustomResponse<>(null, true, 500, "Error al obtener los libros");
+        }
+    }
+    @Transactional(readOnly=true)
+    public CustomResponse<List<Libro>> getInOrden(){
+
+        try {
+            return new CustomResponse<>(this.repositorio.findAllOrderByAnioPublicacionDesc(),false,200, "OK");
+        } catch (Exception e) {
+            return new CustomResponse<>(null, true, 500, "Error al obtener los libros");
+        }
+    }
+
+    @Transactional(readOnly=true)
+    public CustomResponse<List<Libro>> getByAnio(int anioI, int anioF){
+
+        try {
+            if(anioI==0){
+                anioI=1;
+            }
+            if(anioF==0){
+                Date fechaActual = new Date();
+                anioF=fechaActual.getYear() + 1900;
+            }
+            return new CustomResponse<>(this.repositorio.findByAnioPublicacionBetween(anioI,anioF),false,200, "OK");
         } catch (Exception e) {
             return new CustomResponse<>(null, true, 500, "Error al obtener los libros");
         }
